@@ -57,7 +57,7 @@ if (seatsLists === undefined) {
                 <button>Reservar Assento(s)</button>
             </FormContainer>
 
-            <Footer image={seatsLists.movie.posterURL} title={seatsLists.movie.title} day={seatsLists.name} time={seatsLists.day.weekday}/>
+            <Footer image={seatsLists.movie.posterURL} title={seatsLists.movie.title} day={seatsLists.day.weekday} time={seatsLists.name}/>
 
         </PageContainer>
     )
