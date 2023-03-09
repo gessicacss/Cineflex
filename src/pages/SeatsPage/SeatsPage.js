@@ -21,16 +21,21 @@ export default function SeatsPage({sectionChoosed}) {
     }
 ),[idSession])
 
-function selectSeat(seatId){
-        setSelected([...selected, seatId]);
-        
-        if (selected.includes(seatId)) {
-            const newList = selected.filter((oldSeat) => oldSeat !== seatId);
+function selectSeat(seat){
+    if (seat.isAvailable === false) {
+        alert('Esse assento não está disponível');
+        return;
+    }
+        setSelected([...selected, seat]);
+
+        if (selected.includes(seat)) {
+            const newList = selected.filter((oldSeat) => oldSeat.id !== seat.id);
             setSelected(newList);
         }
   }
 
   console.log(seatsLists);
+  console.log(selected);
 
 if (seatsLists === undefined) {
     return <div>Carregando lista de assentos...</div>
@@ -41,10 +46,10 @@ if (seatsLists === undefined) {
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                {seatsLists.seats.map(({id, name, isAvailable}) => {
+                {seatsLists.seats.map((seat) => {
                     return (
-                    <SeatItem key={id} isAvailable={isAvailable} isItSelected={selected.includes(id)} onClick={() => selectSeat(id)}>
-                        {name}
+                    <SeatItem key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat)} onClick={() => selectSeat(seat)}>
+                        {seat.name}
                     </SeatItem>)})}
             </SeatsContainer>
 
