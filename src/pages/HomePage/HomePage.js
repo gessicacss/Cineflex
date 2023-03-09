@@ -20,6 +20,7 @@ export default function HomePage() {
                moviesList.map((movie) => 
                <Movies
                key={movie.id}
+               id={movie.id}
                src={movie.posterURL}
                alt={movie.title}/>)
                 }

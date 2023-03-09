@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import styled from "styled-components"
 import HomePage from "./pages/HomePage/HomePage"
 import SeatsPage from "./pages/SeatsPage/SeatsPage"
@@ -11,11 +11,12 @@ export default function App() {
 
     return (
         <BrowserRouter>
-           <NavContainer>CINEFLEX</NavContainer>
+           <NavContainer>
+            <Link to="/">CINEFLEX</Link></NavContainer>
             <Routes>
                 <Route path="/" element={<HomePage/>} />
-                <Route path="/sessoes/37" element={<SessionsPage />} />
-                <Route path="/assentos/240" element={<SeatsPage sectionChoosed={sectionChoosed}/>} />
+                <Route path="/sessoes/37/:idMovie" element={<SessionsPage />} />
+                <Route path="/assentos/240/:idSession" element={<SeatsPage sectionChoosed={sectionChoosed}/>} />
                 <Route path="/sucesso" element={<SuccessPage/>} />
                 </Routes>
         </BrowserRouter> 

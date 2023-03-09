@@ -1,10 +1,13 @@
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 
-export default function Movies({src, alt}){
+export default function Movies({src, alt, id}){
     return (
+        <Link to={`/sessoes/37/${id}`}>
         <MovieContainer data-test="movie">
         <img src={src} alt={alt}/>
         </MovieContainer>
+        </Link>
     )
 }
 

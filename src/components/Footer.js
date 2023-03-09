@@ -1,13 +1,13 @@
 import styled from "styled-components"
 
-export default function Footer({sectionChoosed}){
+export default function Footer({sectionChoosed, image, title}){
     return (
         <FooterContainer data-test="footer" sectionChoosed={sectionChoosed}>
         <div>
-            <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+            <img src={image} alt={title} />
         </div>
         <div>
-            <p>Tudo em todo lugar ao mesmo tempo</p>
+            <p>{title}</p>
             {sectionChoosed && 
             <p>Sexta - 14h00</p>}
         </div>
