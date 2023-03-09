@@ -1,15 +1,15 @@
 import styled from "styled-components"
 
-export default function Footer({sectionChoosed, image, title}){
+export default function Footer({image, title, day, time}){
     return (
-        <FooterContainer data-test="footer" sectionChoosed={sectionChoosed}>
+        <FooterContainer data-test="footer" time={time}>
         <div>
             <img src={image} alt={title} />
         </div>
         <div>
             <p>{title}</p>
-            {sectionChoosed && 
-            <p>Sexta - 14h00</p>}
+            {time && 
+            <p>{day} - {time}</p>}
         </div>
     </FooterContainer>
     )
@@ -44,7 +44,7 @@ const FooterContainer = styled.div`
     div:nth-child(2) {
         display: flex;
         flex-direction: column;
-        ${({sectionChoosed}) => !sectionChoosed && 'margin-bottom:20px;'}
+        ${({time}) => !time && 'margin-bottom:20px;'}
         align-items: flex-start;
         p {
             text-align: left;
