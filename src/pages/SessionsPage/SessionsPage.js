@@ -6,19 +6,16 @@ import Footer from "../../components/Footer"
 
 export default function SessionsPage() {
     const { idMovie } = useParams();
-    const [sessionsList, setSessionsList] = useState([]);
-    const [sessionListTwo, setSessionsListTwo] = useState([]);
+    const [sessionsList, setSessionsList] = useState(undefined);
 
     useEffect((() => {
         const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`);
         promise.then((res) => {
         setSessionsList(res.data);
-        setSessionsListTwo(res.data.days);
-        console.log(sessionsList);
         })
-        promise.catch(err => console.log(err.response.data))
+        promise.catch(err =>  alert((`Ocorreu um erro carregando as sessões, favor recarregar a página`)))
     }
-    ),[])
+    ),[idMovie])
 
     console.log(sessionsList);
 
@@ -31,19 +28,19 @@ export default function SessionsPage() {
         <PageContainer>
             Selecione o horário
             <div>
-            {sessionListTwo.map(data =>
-                {
-                return (
-                <SessionContainer>
-                {data.weekday} - {data.date}
-                <ButtonsContainer>
-                {data.showtimes.map((hour) => 
-                <button>
-                    <Link to={`/assentos/${hour.id}`}>{hour.name}</Link></button>)}
-                </ButtonsContainer>
-              </SessionContainer>
-              )}
-            )}
+                {sessionsList.days.map(data =>
+                    {
+                    return (
+                    <SessionContainer key={data.id}>
+                    {data.weekday} - {data.date}
+                    <ButtonsContainer>
+                    {data.showtimes.map((hour) => 
+                    <button key={hour.id}>
+                        <Link to={`/assentos/${hour.id}`}>{hour.name}</Link></button>)}
+                    </ButtonsContainer>
+                </SessionContainer>
+                )})
+                }
             </div>
             <Footer image={sessionsList.posterURL} title={sessionsList.title}/>
         </PageContainer>
