@@ -11,8 +11,8 @@ export default function CaptionCircles({name}) {
 }
 
 const CaptionCircle = styled.div`
-  border: 1px solid ${({status}) => status === 'selecionado' ? selectedSeatBorder : status === 'disponivel' ? availableSeatBorder : unavailableSeatBorder }; // Essa cor deve mudar
-  background-color: ${({status}) => status === 'selecionado' ? selectedSeatBG : status === 'disponivel' ? availableSeatBG : unavailableSeatBG }; // Essa cor deve mudar
+  border: 1px solid ${({status}) => status === 'Selecionado' ? selectedSeatBorder : status === 'Disponivel' ? availableSeatBorder : unavailableSeatBorder }; // Essa cor deve mudar
+  background-color: ${({status}) => status === 'Selecionado' ? selectedSeatBG : status === 'Disponivel' ? availableSeatBG : unavailableSeatBG }; // Essa cor deve mudar
   height: 25px;
   width: 25px;
   border-radius: 25px;

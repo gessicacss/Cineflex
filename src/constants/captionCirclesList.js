@@ -1,7 +1,7 @@
 const captionCircles = [
-    {name: 'selecionado'}, 
-    {name: 'disponivel'}, 
-    {name: 'indisponivel'}
+    {name: 'Selecionado'}, 
+    {name: 'Disponivel'}, 
+    {name: 'Indisponivel'}
 ]
 
 export default captionCircles;

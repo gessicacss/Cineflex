@@ -35,8 +35,9 @@ export default function SessionsPage() {
                     {data.weekday} - {data.date}
                     <ButtonsContainer>
                     {data.showtimes.map((hour) => 
+                    <Link to={`/assentos/240/${hour.id}`}>
                     <button key={hour.id} data-test="showtime">
-                    <Link to={`/assentos/240/${hour.id}`}>{hour.name}</Link></button>)}
+                    {hour.name}</button></Link>)}
                     </ButtonsContainer>
                 </SessionContainer>
                 )})
@@ -76,6 +77,7 @@ const ButtonsContainer = styled.div`
     margin: 20px 0;
     button {
         margin-right: 20px;
+        cursor:pointer;
     }
     a {
         text-decoration: none;
