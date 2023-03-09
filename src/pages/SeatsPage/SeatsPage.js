@@ -23,6 +23,11 @@ export default function SeatsPage({sectionChoosed}) {
 
 function selectSeat(seatId){
         setSelected([...selected, seatId]);
+        
+        if (selected.includes(seatId)) {
+            const newList = selected.filter((oldSeat) => oldSeat !== seatId);
+            setSelected(newList);
+        }
   }
 
   console.log(seatsLists);
