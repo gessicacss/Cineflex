@@ -69,7 +69,7 @@ if (seatsLists === undefined) {
             <SeatsContainer>
                 {seatsLists.seats.map((seat) => {
                     return (
-                    <SeatItem key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat.id)} onClick={() => selectSeat(seat)}>
+                    <SeatItem data-test="seat" key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat.id)} onClick={() => selectSeat(seat)}>
                         {seat.name}
                     </SeatItem>)})}
             </SeatsContainer>
@@ -81,6 +81,7 @@ if (seatsLists === undefined) {
             <FormContainer onSubmit={cliquei}>
                 <label htmlFor="">Nome do Comprador:</label>
                 <input id="name"
+                data-test="client-name"
                 name="name"
                 required
                 type="text"
@@ -91,6 +92,7 @@ if (seatsLists === undefined) {
 
                 <label htmlFor="cpf">Nome do Comprador:</label>
                 <input id="cpf"
+                data-test="client-cpf"
                 name="cpf"
                 pattern="[0-9]{11}"
                 required
@@ -100,7 +102,7 @@ if (seatsLists === undefined) {
                 disabled={selected.length <= 0? true : false}
                 placeholder="Digite seu CPF..." />
 
-                <button disabled={selected.length <= 0? true : false}>Reservar Assento(s)</button>
+                <button data-test="book-seat-btn" disabled={selected.length <= 0? true : false}>Reservar Assento(s)</button>
             </FormContainer>
 
             <Footer image={seatsLists.movie.posterURL} title={seatsLists.movie.title} day={seatsLists.day.weekday} time={seatsLists.name}/>
