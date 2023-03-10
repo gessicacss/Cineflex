@@ -1,31 +1,34 @@
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components"
 
 export default function SuccessPage() {
-
+    const location = useLocation();
+    const ticketInfo = location.state.ticketInfo;
+    console.log(ticketInfo);
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
             <TextContainer>
                 <strong><p>Filme e sessão</p></strong>
-                <p>Tudo em todo lugar ao mesmo tempo</p>
-                <p>03/03/2023 - 14:00</p>
+                <p>{ticketInfo.movie.movie.title}</p>
+                <p>{ticketInfo.movie.day.date} - {ticketInfo.movie.name}</p>
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                {ticketInfo.ids.map((seatChosen) => <p key={seatChosen}>Assento {seatChosen}</p>)}
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Comprador</p></strong>
-                <p>Nome: Letícia Chijo</p>
-                <p>CPF: 123.456.789-10</p>
+                <p>Nome: {ticketInfo.name}</p>
+                <p>CPF: {ticketInfo.cpf}</p>
             </TextContainer>
 
-            <button>Voltar para Home</button>
+            <Link to="/">
+                <button>Voltar para Home</button>
+            </Link>
         </PageContainer>
     )
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import CaptionCircles from "../../components/CaptionCircle";
 import Footer from "../../components/Footer"
@@ -11,6 +11,10 @@ export default function SeatsPage({sectionChoosed}) {
     const {idSession} = useParams();
     const [seatsLists, setseatsLists] = useState(undefined);
     const [selected, setSelected] = useState([]);
+    const [seatName, setSeatName] = useState([]);
+    const [name, setName] = useState('');
+    const [cpf, setCpf] = useState('');
+    const navigate = useNavigate();
 
     useEffect((() => {
     const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`);
@@ -26,16 +30,33 @@ function selectSeat(seat){
         alert('Esse assento não está disponível');
         return;
     }
-        setSelected([...selected, seat]);
+        setSelected([...selected, seat.id]);
+        setSeatName([...seatName, seat.name]);
 
-        if (selected.includes(seat)) {
-            const newList = selected.filter((oldSeat) => oldSeat.id !== seat.id);
+        if (selected.includes(seat.id)) {
+            const newList = selected.filter((oldSeat) => oldSeat !== seat.id);
             setSelected(newList);
         }
   }
 
-  console.log(seatsLists);
+
   console.log(selected);
+
+  function cliquei(e){
+    e.preventDefault();
+    const tickedBought = {ids: selected,
+    name: name,
+    cpf: cpf
+    }
+    const ticketInfo = {movie: seatsLists,
+    ids: seatName,
+    name,
+    cpf
+    }
+   const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', tickedBought);
+   promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
+   promise.catch((err) => alert(err.response.data.message))
+  }
 
 if (seatsLists === undefined) {
     return <div>Carregando lista de assentos...</div>
@@ -48,7 +69,7 @@ if (seatsLists === undefined) {
             <SeatsContainer>
                 {seatsLists.seats.map((seat) => {
                     return (
-                    <SeatItem key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat)} onClick={() => selectSeat(seat)}>
+                    <SeatItem key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat.id)} onClick={() => selectSeat(seat)}>
                         {seat.name}
                     </SeatItem>)})}
             </SeatsContainer>
@@ -57,14 +78,29 @@ if (seatsLists === undefined) {
                         {captionCirclesList.map((caption) => <CaptionCircles key={caption.name} name={caption.name}/>)}
             </CaptionContainer>
 
-            <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+            <FormContainer onSubmit={cliquei}>
+                <label htmlFor="">Nome do Comprador:</label>
+                <input id="name"
+                name="name"
+                required
+                type="text"
+                value={name}
+                disabled={selected.length <= 0? true : false}
+                onChange={(e) => {setName(e.target.value)}}
+                placeholder="Digite seu nome..." />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <label htmlFor="cpf">Nome do Comprador:</label>
+                <input id="cpf"
+                name="cpf"
+                pattern="[0-9]{11}"
+                required
+                type="number"
+                value={cpf}
+                onChange={(e) => {setCpf(e.target.value)}}
+                disabled={selected.length <= 0? true : false}
+                placeholder="Digite seu CPF..." />
 
-                <button>Reservar Assento(s)</button>
+                <button disabled={selected.length <= 0? true : false}>Reservar Assento(s)</button>
             </FormContainer>
 
             <Footer image={seatsLists.movie.posterURL} title={seatsLists.movie.title} day={seatsLists.day.weekday} time={seatsLists.name}/>
@@ -94,7 +130,7 @@ const SeatsContainer = styled.div`
     justify-content: center;
     margin-top: 20px;
 `
-const FormContainer = styled.div`
+const FormContainer = styled.form`
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
