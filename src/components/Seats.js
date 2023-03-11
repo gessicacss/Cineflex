@@ -1,8 +1,8 @@
-export default function Seats({selected, buyerInfo, handleSubmit, name}){
-    return (
-        <>
-       <label htmlFor="">Nome do Comprador {name}:</label>
-        <input
+export default function Seats({ selected, buyerInfo, handleSubmit, name }) {
+  return (
+    <>
+      <label htmlFor="">Nome do Comprador {name}:</label>
+      <input
         id="name"
         data-test="client-name"
         name={"name"}
@@ -12,10 +12,10 @@ export default function Seats({selected, buyerInfo, handleSubmit, name}){
         disabled={selected.length <= 0 ? true : false}
         onChange={handleSubmit}
         placeholder="Digite seu nome..."
-        />
+      />
 
-        <label htmlFor="cpf">CPF do Comprador {name}:</label>
-        <input
+      <label htmlFor="cpf">CPF do Comprador {name}:</label>
+      <input
         id="cpf"
         data-test="client-cpf"
         name={"cpf"}
@@ -25,7 +25,7 @@ export default function Seats({selected, buyerInfo, handleSubmit, name}){
         onChange={handleSubmit}
         disabled={selected.length <= 0 ? true : false}
         placeholder="Digite seu CPF..."
-        />
-        </>
-    )
+      />
+    </>
+  );
 }

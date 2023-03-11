@@ -1,15 +1,15 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
-export default function PurchaseInfo ({ticketInfo}){
-    return (
-        <>
-        <TextContainer data-test="movie-info">
+export default function PurchaseInfo({ ticketInfo }) {
+  return (
+    <>
+      <TextContainer data-test="movie-info">
         <strong>
           <p>Filme e sessão</p>
         </strong>
         <p>{ticketInfo.movie.movie.title}</p>
         <p>
-        {ticketInfo.movie.day.date} - {ticketInfo.movie.day.weekday}
+          {ticketInfo.movie.day.date} - {ticketInfo.movie.day.weekday}
         </p>
       </TextContainer>
 
@@ -26,16 +26,15 @@ export default function PurchaseInfo ({ticketInfo}){
         <strong>
           <p>Comprador</p>
         </strong>
-          {ticketInfo.buyerInfo.compradores.map((buyer) => (
-            <>
-          <p>Nome: {buyer.name}</p>
-          <p>CPF: {buyer.cpf}</p>
-          </>)
-          )
-          }
+        {ticketInfo.buyerInfo.compradores.map((buyer) => (
+          <>
+            <p>Nome: {buyer.name}</p>
+            <p>CPF: {buyer.cpf}</p>
+          </>
+        ))}
       </TextContainer>
-      </>
-    )
+    </>
+  );
 }
 
 const TextContainer = styled.div`

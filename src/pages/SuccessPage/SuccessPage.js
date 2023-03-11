@@ -11,7 +11,7 @@ export default function SuccessPage() {
       <h1>
         Pedido feito <br /> com sucesso!
       </h1>
-      <PurchaseInfo ticketInfo={ticketInfo}/>
+      <PurchaseInfo ticketInfo={ticketInfo} />
       <Link to="/" data-test="go-home-btn">
         <button>Voltar para Home</button>
       </Link>
