@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Movies from "../../components/Movies";
+import Movies from "./componentsHomePage/Movies";
 import axios from "axios";
 import { useEffect, useState } from "react";
 

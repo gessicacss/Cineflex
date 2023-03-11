@@ -5,11 +5,13 @@ import HomePage from "./pages/HomePage/HomePage";
 import SeatsPage from "./pages/SeatsPage/SeatsPage";
 import SessionsPage from "./pages/SessionsPage/SessionsPage";
 import SuccessPage from "./pages/SuccessPage/SuccessPage";
+import BackButton from './components/BackButton';
 
 export default function App() {
   return (
     <BrowserRouter>
       <NavContainer>
+        <BackButton/>
         <Link to="/">CINEFLEX</Link>
       </NavContainer>
       <Routes>

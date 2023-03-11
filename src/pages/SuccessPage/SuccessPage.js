@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import PurchaseInfo from "../../components/PurchaseInfo";
+import PurchaseInfo from "./componentsSucessPage/PurchaseInfo";
 
 export default function SuccessPage() {
   const location = useLocation();

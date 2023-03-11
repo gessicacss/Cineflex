@@ -13,7 +13,7 @@ import {
   unavailableSeatBorder,
 } from "../../constants/color";
 import captionCirclesList from "../../constants/captionCirclesList";
-import Seats from "../../components/Seats";
+import Seats from "./componentsSeatsPage/Seats";
 
 export default function SeatsPage() {
   const { idSession } = useParams();
