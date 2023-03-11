@@ -1,169 +1,192 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import styled from "styled-components"
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
 import CaptionCircles from "../../components/CaptionCircle";
-import Footer from "../../components/Footer"
-import { selectedSeatBG, selectedSeatBorder, availableSeatBG, availableSeatBorder, unavailableSeatBG, unavailableSeatBorder } from "../../constants/color";
+import Footer from "../../components/Footer";
+import {
+  selectedSeatBG,
+  selectedSeatBorder,
+  availableSeatBG,
+  availableSeatBorder,
+  unavailableSeatBG,
+  unavailableSeatBorder,
+} from "../../constants/color";
 import captionCirclesList from "../../constants/captionCirclesList";
+import Seats from "../../components/Seats";
 
-export default function SeatsPage({sectionChoosed}) {
-    const {idSession} = useParams();
-    const [seatsLists, setseatsLists] = useState(undefined);
-    const [selected, setSelected] = useState([]);
-    const [seatName, setSeatName] = useState([]);
-    const [name, setName] = useState('');
-    const [cpf, setCpf] = useState('');
-    const navigate = useNavigate();
+export default function SeatsPage() {
+  const { idSession } = useParams();
+  const [seatsLists, setseatsLists] = useState(undefined);
+  const [selected, setSelected] = useState([]);
+  const [seatName, setSeatName] = useState([]);
+  const [buyerInfo, setBuyerInfo] = useState({ids: [], compradores: []});
+  const navigate = useNavigate();
 
-    useEffect((() => {
-    const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`);
+  useEffect(() => {
+    const promise = axios.get(
+      `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`
+    );
     promise.then((res) => {
-    setseatsLists(res.data);
-    })
-    promise.catch(err =>  alert((`Ocorreu um erro carregando os assentos, favor recarregar a página`)))
-    }
-),[idSession])
+      setseatsLists(res.data);
+    });
+    promise.catch((err) =>
+      alert(err.response.data.message)
+    );
+  }, [idSession]);
 
-function selectSeat(seat){
+  function selectSeat(seat) {
     if (seat.isAvailable === false) {
-        alert('Esse assento não está disponível');
-        return;
+      alert("Esse assento não está disponível");
+      return;
     }
-        setSelected([...selected, seat.id]);
-        setSeatName([...seatName, seat.name]);
+    setSelected([...selected, seat.id]);
+    setSeatName([...seatName, seat.name]);
 
-        if (selected.includes(seat.id)) {
-            const newList = selected.filter((oldSeat) => oldSeat !== seat.id);
-            setSelected(newList);
-        }
-  }
-
-
-  console.log(selected);
-
-  function cliquei(e){
-    e.preventDefault();
-    const tickedBought = {ids: selected,
-    name: name,
-    cpf: cpf
+    if (selected.includes(seat.id)) {
+      const newList = selected.filter((oldSeat) => oldSeat !== seat.id);
+      setSelected(newList);
     }
-    const ticketInfo = {movie: seatsLists,
-    ids: seatName,
-    name,
-    cpf
-    }
-   const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', tickedBought);
-   promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
-   promise.catch((err) => alert(err.response.data.message))
-  }
-
-if (seatsLists === undefined) {
-    return <div>Carregando lista de assentos...</div>
 }
 
-    return (
-        <PageContainer>
-            Selecione o(s) assento(s)
+  function handleSubmit(event, id) {
+    const newBuyerInfo = { ...buyerInfo };
+    const buyerIndex = newBuyerInfo.compradores.findIndex((buyer) => buyer.id === id);
+    if (buyerIndex >= 0) {
+      newBuyerInfo.compradores[buyerIndex] = { ...newBuyerInfo.compradores[buyerIndex], [event.target.name]: event.target.value };
+    } else {
+      newBuyerInfo.ids.unshift(id);
+      newBuyerInfo.compradores.push({ id: id, [event.target.name]: event.target.value });
+    }
+    setBuyerInfo(newBuyerInfo);
+  }
 
-            <SeatsContainer>
-                {seatsLists.seats.map((seat) => {
-                    return (
-                    <SeatItem data-test="seat" key={seat.id} isAvailable={seat.isAvailable} isItSelected={selected.includes(seat.id)} onClick={() => selectSeat(seat)}>
-                        {seat.name}
-                    </SeatItem>)})}
-            </SeatsContainer>
+console.log(buyerInfo);
 
-            <CaptionContainer>
-                        {captionCirclesList.map((caption) => <CaptionCircles key={caption.name} name={caption.name}/>)}
-            </CaptionContainer>
+  function cliquei(e) {
+    e.preventDefault();
+    const ticketInfo = { movie: seatsLists, buyerInfo, seatName };
+       const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', buyerInfo);
+       promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
+       promise.catch((err) => alert(err.response.data.message))
+  }
 
-            <FormContainer onSubmit={cliquei}>
-                <label htmlFor="">Nome do Comprador:</label>
-                <input id="name"
-                data-test="client-name"
-                name="name"
-                required
-                type="text"
-                value={name}
-                disabled={selected.length <= 0? true : false}
-                onChange={(e) => {setName(e.target.value)}}
-                placeholder="Digite seu nome..." />
+  if (seatsLists === undefined) {
+    return <div>Carregando lista de assentos...</div>;
+  }
 
-                <label htmlFor="cpf">Nome do Comprador:</label>
-                <input id="cpf"
-                data-test="client-cpf"
-                name="cpf"
-                pattern="[0-9]{11}"
-                required
-                type="number"
-                value={cpf}
-                onChange={(e) => {setCpf(e.target.value)}}
-                disabled={selected.length <= 0? true : false}
-                placeholder="Digite seu CPF..." />
-
-                <button data-test="book-seat-btn" disabled={selected.length <= 0? true : false}>Reservar Assento(s)</button>
-            </FormContainer>
-
-            <Footer image={seatsLists.movie.posterURL} title={seatsLists.movie.title} day={seatsLists.day.weekday} time={seatsLists.name}/>
-
-        </PageContainer>
-    )
+  return (
+    <PageContainer>
+      Selecione o(s) assento(s)
+      <SeatsContainer>
+        {seatsLists.seats.map((seat) => {
+          return (
+            <SeatItem
+              data-test="seat"
+              key={seat.id}
+              isAvailable={seat.isAvailable}
+              isItSelected={selected.includes(seat.id)}
+              onClick={() => selectSeat(seat)}
+            >
+              {seat.name}
+            </SeatItem>
+          );
+        })}
+      </SeatsContainer>
+      <CaptionContainer>
+        {captionCirclesList.map((caption) => (
+          <CaptionCircles key={caption.name} name={caption.name} />
+        ))}
+      </CaptionContainer>
+      <FormContainer onSubmit={cliquei}>
+        {seatName.map((selectedSeat) => 
+        <Seats
+        key={selectedSeat}
+        buyerInfo={buyerInfo}
+        selected={selected}
+        name={selectedSeat}
+        handleSubmit={(event) => handleSubmit(event, selectedSeat)} /> )}
+        <button
+          data-test="book-seat-btn"
+          disabled={selected.length <= 0 ? true : false}
+        >
+          Reservar Assento(s)
+        </button>
+      </FormContainer>
+      <Footer
+        image={seatsLists.movie.posterURL}
+        title={seatsLists.movie.title}
+        day={seatsLists.day.weekday}
+        time={seatsLists.name}
+      />
+    </PageContainer>
+  );
 }
 
 const PageContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Roboto';
-    font-size: 24px;
-    text-align: center;
-    color: #293845;
-    margin-top: 30px;
-    padding-bottom: 120px;
-    padding-top: 70px;
-`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Roboto";
+  font-size: 24px;
+  text-align: center;
+  color: #293845;
+  margin-top: 30px;
+  padding-bottom: 120px;
+  padding-top: 70px;
+`;
 const SeatsContainer = styled.div`
-    width: 330px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-`
+  width: 330px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+`;
 const FormContainer = styled.form`
-    width: calc(100vw - 40px); 
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 20px 0;
-    font-size: 18px;
-    button {
-        align-self: center;
-    }
-    input {
-        width: calc(100vw - 60px);
-    }
-`
+  width: calc(100vw - 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px 0;
+  font-size: 18px;
+  button {
+    align-self: center;
+  }
+  input {
+    width: calc(100vw - 60px);
+  }
+`;
 const CaptionContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    width: 300px;
-    justify-content: space-between;
-    margin: 20px;
-`
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  justify-content: space-between;
+  margin: 20px;
+`;
 
 const SeatItem = styled.div`
-    border: 1px solid ${({isAvailable, isItSelected}) => isItSelected ? selectedSeatBorder : isAvailable ? availableSeatBorder : unavailableSeatBorder }; // Essa cor deve mudar
-    background-color: ${({isAvailable, isItSelected}) => isItSelected ? selectedSeatBG : isAvailable ? availableSeatBG : unavailableSeatBG };    // Essa cor deve mudar
-    height: 25px;
-    width: 25px;
-    border-radius: 25px;
-    font-family: 'Roboto';
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 5px 3px;
+  border: 1px solid
+    ${({ isAvailable, isItSelected }) =>
+      isItSelected
+        ? selectedSeatBorder
+        : isAvailable
+        ? availableSeatBorder
+        : unavailableSeatBorder}; // Essa cor deve mudar
+  background-color: ${({ isAvailable, isItSelected }) =>
+    isItSelected
+      ? selectedSeatBG
+      : isAvailable
+      ? availableSeatBG
+      : unavailableSeatBG}; // Essa cor deve mudar
+  height: 25px;
+  width: 25px;
+  border-radius: 25px;
+  font-family: "Roboto";
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 3px;
 `;

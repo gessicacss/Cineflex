@@ -1,7 +1,14 @@
 import styled from "styled-components";
-import { selectedSeatBG, selectedSeatBorder, availableSeatBG, availableSeatBorder, unavailableSeatBG, unavailableSeatBorder } from "../constants/color";
+import {
+  selectedSeatBG,
+  selectedSeatBorder,
+  availableSeatBG,
+  availableSeatBorder,
+  unavailableSeatBG,
+  unavailableSeatBorder,
+} from "../constants/color";
 
-export default function CaptionCircles({name}) {
+export default function CaptionCircles({ name }) {
   return (
     <CaptionItem>
       <CaptionCircle status={name} />
@@ -11,8 +18,19 @@ export default function CaptionCircles({name}) {
 }
 
 const CaptionCircle = styled.div`
-  border: 1px solid ${({status}) => status === 'Selecionado' ? selectedSeatBorder : status === 'Disponivel' ? availableSeatBorder : unavailableSeatBorder }; // Essa cor deve mudar
-  background-color: ${({status}) => status === 'Selecionado' ? selectedSeatBG : status === 'Disponivel' ? availableSeatBG : unavailableSeatBG }; // Essa cor deve mudar
+  border: 1px solid
+    ${({ status }) =>
+      status === "Selecionado"
+        ? selectedSeatBorder
+        : status === "Disponivel"
+        ? availableSeatBorder
+        : unavailableSeatBorder}; // Essa cor deve mudar
+  background-color: ${({ status }) =>
+    status === "Selecionado"
+      ? selectedSeatBG
+      : status === "Disponivel"
+      ? availableSeatBG
+      : unavailableSeatBG}; // Essa cor deve mudar
   height: 25px;
   width: 25px;
   border-radius: 25px;
