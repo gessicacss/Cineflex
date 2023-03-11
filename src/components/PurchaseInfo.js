@@ -27,10 +27,10 @@ export default function PurchaseInfo({ ticketInfo }) {
           <p>Comprador</p>
         </strong>
         {ticketInfo.buyerInfo.compradores.map((buyer) => (
-          <>
-            <p key={buyer.cpf}>Nome: {buyer.nome}</p>
+          <div key={buyer.cpf}>
+            <p>Nome: {buyer.nome}</p>
             <p>CPF: {buyer.cpf}</p>
-          </>
+          </div>
         ))}
       </TextContainer>
     </>
@@ -46,5 +46,8 @@ const TextContainer = styled.div`
   strong {
     font-weight: bold;
     margin-bottom: 10px;
+  }
+  div {
+    margin-bottom:15px;
   }
 `;

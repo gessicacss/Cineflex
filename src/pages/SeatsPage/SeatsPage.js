@@ -21,6 +21,7 @@ export default function SeatsPage() {
   const [selected, setSelected] = useState([]);
   const [buyerInfo, setBuyerInfo] = useState({ ids: [], compradores: [] });
   const navigate = useNavigate();
+  let newBuyerInfo;
 
   useEffect(() => {
     const promise = axios.get(
@@ -40,7 +41,26 @@ export default function SeatsPage() {
       return;
     }
     if (selected.some((seatChosen) => seatChosen.idAssento === seat.id)) {
-      if (window.confirm("Realmente quer desmarcar esse assento?")) {
+      const isItFilled = buyerInfo.compradores.find((oldSeat) => oldSeat.idAssento === seat.id);
+      const buyerHasInfo = isItFilled && (isItFilled.nome !== '' || isItFilled.cpf !== '');
+      if (buyerHasInfo) {
+        const confirmed = window.confirm("Realmente quer desmarcar esse assento?");
+        if (confirmed) {        
+          const newSelectedList = selected.filter(
+            (oldSeat) => oldSeat.idAssento !== seat.id
+          );
+          setSelected(newSelectedList);
+          setBuyerInfo((prevBuyerInfo) => {
+            return {
+              ...prevBuyerInfo,
+              ids: newSelectedList.map((seat) => seat.idAssento),
+              compradores: prevBuyerInfo.compradores.filter(
+                (buyer) => buyer.idAssento !== seat.id
+              ),
+            };
+          });
+        }
+      } else {
         const newSelectedList = selected.filter(
           (oldSeat) => oldSeat.idAssento !== seat.id
         );
@@ -54,24 +74,21 @@ export default function SeatsPage() {
             ),
           };
         });
-        return;
-      } else {
-        return;
       }
+    } else {
+      setSelected([...selected, { idAssento: seat.id, name: seat.name }]);
+      setBuyerInfo((prevBuyerInfo) => {
+        return {
+          ...prevBuyerInfo,
+          ids: [...selected, seat.id],
+          compradores: [
+            ...prevBuyerInfo.compradores,
+            { idAssento: seat.id, nome: "", cpf: "" },
+          ],
+        };
+      });
     }
-  
-    setSelected([...selected, { idAssento: seat.id, name: seat.name }]);
-    setBuyerInfo((prevBuyerInfo) => {
-      return {
-        ...prevBuyerInfo,
-        ids: [...selected, seat.id],
-        compradores: [
-          ...prevBuyerInfo.compradores,
-          { idAssento: seat.id, nome: "", cpf: "" },
-        ],
-      };
-    });
-}
+  }  
 
 function handleSubmit(event, id) {
   const { name, value } = event.target;
@@ -88,6 +105,7 @@ function handleSubmit(event, id) {
   });
 }
 
+console.log('cpf', buyerInfo.compradores.nome);
 console.log('buyerINfo',buyerInfo);
 console.log('selected',selected)
 
