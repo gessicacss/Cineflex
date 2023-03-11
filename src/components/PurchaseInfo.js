@@ -18,7 +18,7 @@ export default function PurchaseInfo({ ticketInfo }) {
           <p>Ingressos</p>
         </strong>
         {ticketInfo.selected.map((seatChosen) => (
-          <p key={seatChosen.id}>Assento {seatChosen.name}</p>
+          <p key={seatChosen.name}>Assento {seatChosen.name}</p>
         ))}
       </TextContainer>
 
