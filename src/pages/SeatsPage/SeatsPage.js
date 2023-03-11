@@ -21,7 +21,6 @@ export default function SeatsPage() {
   const [selected, setSelected] = useState([]);
   const [buyerInfo, setBuyerInfo] = useState({ ids: [], compradores: [] });
   const navigate = useNavigate();
-  let newBuyerInfo;
 
   useEffect(() => {
     const promise = axios.get(
@@ -42,7 +41,7 @@ export default function SeatsPage() {
     }
     if (selected.some((seatChosen) => seatChosen.idAssento === seat.id)) {
       const isItFilled = buyerInfo.compradores.find((oldSeat) => oldSeat.idAssento === seat.id);
-      const buyerHasInfo = isItFilled && (isItFilled.nome !== '' || isItFilled.cpf !== '');
+      const buyerHasInfo = isItFilled.nome !== '' || isItFilled.cpf !== '';
       if (buyerHasInfo) {
         const confirmed = window.confirm("Realmente quer desmarcar esse assento?");
         if (confirmed) {        
