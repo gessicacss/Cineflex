@@ -20,7 +20,7 @@ export default function SeatsPage() {
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
   const [seatName, setSeatName] = useState([]);
-  const [buyerInfo, setBuyerInfo] = useState({idAssento: [], compradores: []});
+  const [buyerInfo, setBuyerInfo] = useState({ids: [], compradores: []});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,8 +59,8 @@ export default function SeatsPage() {
     if (buyerIndex >= 0) {
       newBuyerInfo.compradores[buyerIndex] = { ...newBuyerInfo.compradores[buyerIndex], [event.target.name]: event.target.value };
     } else {
-      newBuyerInfo.idAssento.push(id);
-      newBuyerInfo.compradores.push({ id: id, [event.target.name]: event.target.value });
+      newBuyerInfo.ids.push(id);
+      newBuyerInfo.compradores.push({ idAssento: id, [event.target.name]: event.target.value });
     }
     setBuyerInfo(newBuyerInfo);
   }
@@ -114,7 +114,7 @@ console.log(selected)
         <button
           data-test="book-seat-btn"
           disabled={selected.length <= 0 ? true : false}
-        >
+        >ids
           Reservar Assento(s)
         </button>
       </FormContainer>
