@@ -19,8 +19,7 @@ export default function SeatsPage() {
   const { idSession } = useParams();
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
-  const [seatName, setSeatName] = useState([]);
-  const [buyerInfo, setBuyerInfo] = useState({ids: [], compradores: []});
+  const [buyerInfo, setBuyerInfo] = useState({ ids: [], compradores: [] });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,38 +39,69 @@ export default function SeatsPage() {
       alert("Esse assento não está disponível");
       return;
     }
-
-    if (selected.some((seatChosen) => seatChosen.id === seat.id)) {
+    if (selected.some((seatChosen) => seatChosen.idAssento === seat.id)) {
       if (window.confirm("Realmente quer desmarcar esse assento?")) {
-      const newList = selected.filter((oldSeat) => oldSeat.id !== seat.id);
-      setSelected(newList);
-      return;
+        const newSelectedList = selected.filter(
+          (oldSeat) => oldSeat.idAssento !== seat.id
+        );
+        setSelected(newSelectedList);
+        setBuyerInfo((prevBuyerInfo) => {
+          return {
+            ...prevBuyerInfo,
+            ids: newSelectedList.map((seat) => seat.idAssento),
+            compradores: prevBuyerInfo.compradores.filter(
+              (buyer) => buyer.idAssento !== seat.id
+            ),
+          };
+        });
+        return;
       } else {
         return;
       }
     }
-    setSelected([...selected, {id: seat.id, name: seat.name}]);
+  
+    setSelected([...selected, { idAssento: seat.id, name: seat.name }]);
+    setBuyerInfo((prevBuyerInfo) => {
+      return {
+        ...prevBuyerInfo,
+        ids: [...selected, seat.id],
+        compradores: [
+          ...prevBuyerInfo.compradores,
+          { idAssento: seat.id, nome: "", cpf: "" },
+        ],
+      };
+    });
 }
 
-  function handleSubmit(event, id) {
-    const newBuyerInfo = { ...buyerInfo };
-    const buyerIndex = newBuyerInfo.compradores.findIndex((buyer) => buyer.id === id);
-    if (buyerIndex >= 0) {
-      newBuyerInfo.compradores[buyerIndex] = { ...newBuyerInfo.compradores[buyerIndex], [event.target.name]: event.target.value };
-    } else {
-      newBuyerInfo.ids.push(id);
-      newBuyerInfo.compradores.push({ idAssento: id, [event.target.name]: event.target.value });
-    }
-    setBuyerInfo(newBuyerInfo);
-  }
+function handleSubmit(event, id) {
+  const { name, value } = event.target;
+  setBuyerInfo((prevBuyerInfo) => {
+    const newBuyerInfo = { ...prevBuyerInfo };
+    newBuyerInfo.compradores = newBuyerInfo.compradores.map((comprador) => {
+      if (comprador.idAssento === id) {
+        return { ...comprador, [name]: value };
+      } else {
+        return comprador;
+      }
+    });
+    return newBuyerInfo;
+  });
+}
 
-console.log(buyerInfo);
-console.log(selected)
+console.log('buyerINfo',buyerInfo);
+console.log('selected',selected)
 
-  function cliquei(e) {
+  function checkOut(e) {
     e.preventDefault();
+    const ids = selected.map((seat) => seat.idAssento);
+    const compradores = ids.map((id) => {
+      const comprador = buyerInfo.compradores.find((comprador) => comprador.idAssento === id);
+      return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
+    });
+  
+    const tickets = { ids, compradores };
     const ticketInfo = { movie: seatsLists, buyerInfo, selected };
-       const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', buyerInfo);
+       const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', tickets);
        promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
        promise.catch((err) => alert(err.response.data.message))
   }
@@ -90,7 +120,7 @@ console.log(selected)
               data-test="seat"
               key={seat.id}
               isAvailable={seat.isAvailable}
-              isItSelected={selected.some((seatChosen) => seatChosen.id === seat.id)}
+              isItSelected={selected.some((seatChosen) => seatChosen.idAssento === seat.id)}
               onClick={() => selectSeat(seat)}
             >
               {seat.name}
@@ -103,18 +133,18 @@ console.log(selected)
           <CaptionCircles key={caption.name} name={caption.name} />
         ))}
       </CaptionContainer>
-      <FormContainer onSubmit={cliquei}>
-        {selected.map((seats) => 
+      <FormContainer onSubmit={checkOut}>
+        {selected.map(({name: nome, idAssento: idAssento}) => 
         <Seats
-        key={seats.id}
+        key={idAssento}
         buyerInfo={buyerInfo}
         selected={selected}
-        name={seats.name}
-        handleSubmit={(event) => handleSubmit(event, seats.id)} /> )}
+        name={nome}
+        handleSubmit={(event) => handleSubmit(event, idAssento)} /> )}
         <button
           data-test="book-seat-btn"
           disabled={selected.length <= 0 ? true : false}
-        >ids
+        >
           Reservar Assento(s)
         </button>
       </FormContainer>

@@ -5,7 +5,7 @@ export default function Seats({selected, buyerInfo, handleSubmit, name}){
         <input
         id="name"
         data-test="client-name"
-        name={"name"}
+        name={"nome"}
         required
         type="text"
         value={buyerInfo.name}

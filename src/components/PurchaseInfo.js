@@ -28,7 +28,7 @@ export default function PurchaseInfo({ ticketInfo }) {
         </strong>
         {ticketInfo.buyerInfo.compradores.map((buyer) => (
           <div key={buyer.cpf}>
-            <p>Nome: {buyer.name}</p>
+            <p>Nome: {buyer.nome}</p>
             <p>CPF: {buyer.cpf}</p>
           </div>
         ))}
