@@ -27,10 +27,10 @@ export default function PurchaseInfo({ ticketInfo }) {
           <p>Comprador</p>
         </strong>
         {ticketInfo.buyerInfo.compradores.map((buyer) => (
-          <div key={buyer.cpf}>
-            <p>Nome: {buyer.nome}</p>
+          <>
+            <p key={buyer.cpf}>Nome: {buyer.nome}</p>
             <p>CPF: {buyer.cpf}</p>
-          </div>
+          </>
         ))}
       </TextContainer>
     </>

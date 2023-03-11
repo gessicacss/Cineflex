@@ -100,6 +100,7 @@ console.log('selected',selected)
     });
   
     const tickets = { ids, compradores };
+    console.log('ticket enviado pra api', tickets);
     const ticketInfo = { movie: seatsLists, buyerInfo, selected };
        const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', tickets);
        promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
