@@ -20,7 +20,7 @@ export default function SeatsPage() {
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
   const [seatName, setSeatName] = useState([]);
-  const [buyerInfo, setBuyerInfo] = useState({ids: [], compradores: []});
+  const [buyerInfo, setBuyerInfo] = useState({idAssento: [], compradores: []});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function SeatsPage() {
     if (buyerIndex >= 0) {
       newBuyerInfo.compradores[buyerIndex] = { ...newBuyerInfo.compradores[buyerIndex], [event.target.name]: event.target.value };
     } else {
-      newBuyerInfo.ids.push(id);
+      newBuyerInfo.idAssento.push(id);
       newBuyerInfo.compradores.push({ id: id, [event.target.name]: event.target.value });
     }
     setBuyerInfo(newBuyerInfo);
