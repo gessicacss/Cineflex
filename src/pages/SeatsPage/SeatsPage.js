@@ -79,7 +79,7 @@ export default function SeatsPage() {
       setBuyerInfo((prevBuyerInfo) => {
         return {
           ...prevBuyerInfo,
-          ids: [...selected, seat.id],
+          ids: [...prevBuyerInfo.ids, seat.id],
           compradores: [
             ...prevBuyerInfo.compradores,
             { idAssento: seat.id, nome: "", cpf: "" },
