@@ -29,10 +29,10 @@ export default function SeatsPage() {
     promise.then((res) => {
       setseatsLists(res.data);
     });
-    promise.catch((err) =>
-      alert(err.response.data.message)
-    );
+    promise.catch((err) => alert(err.response.data.message));
   }, [idSession]);
+
+  function removeSeat(seat) {}
 
   function selectSeat(seat) {
     if (seat.isAvailable === false) {
@@ -40,11 +40,15 @@ export default function SeatsPage() {
       return;
     }
     if (selected.some((seatChosen) => seatChosen.idAssento === seat.id)) {
-      const isItFilled = buyerInfo.compradores.find((oldSeat) => oldSeat.idAssento === seat.id);
-      const buyerHasInfo = isItFilled.nome !== '' || isItFilled.cpf !== '';
+      const isItFilled = buyerInfo.compradores.find(
+        (oldSeat) => oldSeat.idAssento === seat.id
+      );
+      const buyerHasInfo = isItFilled.nome !== "" || isItFilled.cpf !== "";
       if (buyerHasInfo) {
-        const confirmed = window.confirm("Realmente quer desmarcar esse assento?");
-        if (confirmed) {        
+        const confirmed = window.confirm(
+          "Realmente quer desmarcar esse assento?"
+        );
+        if (confirmed) {
           const newSelectedList = selected.filter(
             (oldSeat) => oldSeat.idAssento !== seat.id
           );
@@ -87,41 +91,46 @@ export default function SeatsPage() {
         };
       });
     }
-  }  
+  }
 
-function handleSubmit(event, id) {
-  const { name, value } = event.target;
-  setBuyerInfo((prevBuyerInfo) => {
-    const newBuyerInfo = { ...prevBuyerInfo };
-    newBuyerInfo.compradores = newBuyerInfo.compradores.map((comprador) => {
-      if (comprador.idAssento === id) {
-        return { ...comprador, [name]: value };
-      } else {
-        return comprador;
-      }
+  function handleSubmit(event, id) {
+    const { name, value } = event.target;
+    setBuyerInfo((prevBuyerInfo) => {
+      const newBuyerInfo = { ...prevBuyerInfo };
+      newBuyerInfo.compradores = newBuyerInfo.compradores.map((comprador) => {
+        if (comprador.idAssento === id) {
+          return { ...comprador, [name]: value };
+        } else {
+          return comprador;
+        }
+      });
+      return newBuyerInfo;
     });
-    return newBuyerInfo;
-  });
-}
+  }
 
-console.log('cpf', buyerInfo.compradores.nome);
-console.log('buyerINfo',buyerInfo);
-console.log('selected',selected)
+  console.log("cpf", buyerInfo.compradores.nome);
+  console.log("buyerINfo", buyerInfo);
+  console.log("selected", selected);
 
   function checkOut(e) {
     e.preventDefault();
     const ids = selected.map((seat) => seat.idAssento);
     const compradores = ids.map((id) => {
-      const comprador = buyerInfo.compradores.find((comprador) => comprador.idAssento === id);
+      const comprador = buyerInfo.compradores.find(
+        (comprador) => comprador.idAssento === id
+      );
       return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
     });
-  
+
     const tickets = { ids, compradores };
-    console.log('ticket enviado pra api', tickets);
+    console.log("ticket enviado pra api", tickets);
     const ticketInfo = { movie: seatsLists, buyerInfo, selected };
-       const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', tickets);
-       promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
-       promise.catch((err) => alert(err.response.data.message))
+    const promise = axios.post(
+      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+      tickets
+    );
+    promise.then(() => navigate("/sucesso", { state: { ticketInfo } }));
+    promise.catch((err) => alert(err.response.data.message));
   }
 
   if (seatsLists === undefined) {
@@ -138,7 +147,9 @@ console.log('selected',selected)
               data-test="seat"
               key={seat.id}
               isAvailable={seat.isAvailable}
-              isItSelected={selected.some((seatChosen) => seatChosen.idAssento === seat.id)}
+              isItSelected={selected.some(
+                (seatChosen) => seatChosen.idAssento === seat.id
+              )}
               onClick={() => selectSeat(seat)}
             >
               {seat.name}
@@ -152,13 +163,15 @@ console.log('selected',selected)
         ))}
       </CaptionContainer>
       <FormContainer onSubmit={checkOut}>
-        {selected.map(({name: nome, idAssento: idAssento}) => 
-        <Seats
-        key={idAssento}
-        buyerInfo={buyerInfo}
-        selected={selected}
-        name={nome}
-        handleSubmit={(event) => handleSubmit(event, idAssento)} /> )}
+        {selected.map(({ name: nome, idAssento: idAssento }) => (
+          <Seats
+            key={idAssento}
+            buyerInfo={buyerInfo}
+            selected={selected}
+            name={nome}
+            handleSubmit={(event) => handleSubmit(event, idAssento)}
+          />
+        ))}
         <button
           data-test="book-seat-btn"
           disabled={selected.length <= 0 ? true : false}
