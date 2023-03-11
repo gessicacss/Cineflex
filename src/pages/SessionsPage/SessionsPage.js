@@ -33,7 +33,7 @@ export default function SessionsPage() {
           return (
             <Sessions
               date={data.date}
-              id={data.id}
+              key={data.id}
               weekday={data.weekday}
               showtimes={data.showtimes}
             />

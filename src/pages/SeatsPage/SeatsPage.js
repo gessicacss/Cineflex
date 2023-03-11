@@ -40,15 +40,17 @@ export default function SeatsPage() {
       alert("Esse assento não está disponível");
       return;
     }
-    setSelected([...selected, seat.id]);
-    setSeatName([...seatName, seat.name]);
 
-    if (selected.includes(seat.id)) {
-      const newList = selected.filter((oldSeat) => oldSeat !== seat.id);
-      const newListName = seatName.filter((oldSeat) => oldSeat !== seat.name);
+    if (selected.some((seatChosen) => seatChosen.id === seat.id)) {
+      if (window.confirm("Realmente quer desmarcar esse assento?")) {
+      const newList = selected.filter((oldSeat) => oldSeat.id !== seat.id);
       setSelected(newList);
-      setSeatName(newListName);
+      return;
+      } else {
+        return;
+      }
     }
+    setSelected([...selected, {id: seat.id, name: seat.name}]);
 }
 
   function handleSubmit(event, id) {
@@ -57,18 +59,18 @@ export default function SeatsPage() {
     if (buyerIndex >= 0) {
       newBuyerInfo.compradores[buyerIndex] = { ...newBuyerInfo.compradores[buyerIndex], [event.target.name]: event.target.value };
     } else {
-      newBuyerInfo.ids.unshift(id);
+      newBuyerInfo.ids.push(id);
       newBuyerInfo.compradores.push({ id: id, [event.target.name]: event.target.value });
     }
     setBuyerInfo(newBuyerInfo);
   }
 
-console.log(selected);
-console.log('nome assento', seatName)
+console.log(buyerInfo);
+console.log(selected)
 
   function cliquei(e) {
     e.preventDefault();
-    const ticketInfo = { movie: seatsLists, buyerInfo, seatName };
+    const ticketInfo = { movie: seatsLists, buyerInfo, selected };
        const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', buyerInfo);
        promise.then(() => navigate('/sucesso', { state: {ticketInfo} }));
        promise.catch((err) => alert(err.response.data.message))
@@ -88,7 +90,7 @@ console.log('nome assento', seatName)
               data-test="seat"
               key={seat.id}
               isAvailable={seat.isAvailable}
-              isItSelected={selected.includes(seat.id)}
+              isItSelected={selected.some((seatChosen) => seatChosen.id === seat.id)}
               onClick={() => selectSeat(seat)}
             >
               {seat.name}
@@ -102,13 +104,13 @@ console.log('nome assento', seatName)
         ))}
       </CaptionContainer>
       <FormContainer onSubmit={cliquei}>
-        {seatName.map((selectedSeat) => 
+        {selected.map((seats) => 
         <Seats
-        key={selectedSeat}
+        key={seats.id}
         buyerInfo={buyerInfo}
         selected={selected}
-        name={selectedSeat}
-        handleSubmit={(event) => handleSubmit(event, selectedSeat)} /> )}
+        name={seats.name}
+        handleSubmit={(event) => handleSubmit(event, seats.id)} /> )}
         <button
           data-test="book-seat-btn"
           disabled={selected.length <= 0 ? true : false}

@@ -9,7 +9,7 @@ export default function PurchaseInfo({ ticketInfo }) {
         </strong>
         <p>{ticketInfo.movie.movie.title}</p>
         <p>
-          {ticketInfo.movie.day.date} - {ticketInfo.movie.day.weekday}
+          {ticketInfo.movie.day.date} - {ticketInfo.movie.name}
         </p>
       </TextContainer>
 
@@ -17,8 +17,8 @@ export default function PurchaseInfo({ ticketInfo }) {
         <strong>
           <p>Ingressos</p>
         </strong>
-        {ticketInfo.seatName.map((seatChosen) => (
-          <p key={seatChosen}>Assento {seatChosen}</p>
+        {ticketInfo.selected.map((seatChosen) => (
+          <p key={seatChosen.id}>Assento {seatChosen.name}</p>
         ))}
       </TextContainer>
 
@@ -27,10 +27,10 @@ export default function PurchaseInfo({ ticketInfo }) {
           <p>Comprador</p>
         </strong>
         {ticketInfo.buyerInfo.compradores.map((buyer) => (
-          <>
+          <div key={buyer.cpf}>
             <p>Nome: {buyer.name}</p>
             <p>CPF: {buyer.cpf}</p>
-          </>
+          </div>
         ))}
       </TextContainer>
     </>

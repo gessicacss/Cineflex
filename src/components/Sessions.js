@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Sessions({ date, id, weekday, showtimes }) {
+export default function Sessions({ date, weekday, showtimes }) {
   return (
-    <SessionContainer key={id} data-test="movie-day">
+    <SessionContainer data-test="movie-day">
       {weekday} - {date}
       <ButtonsContainer>
         {showtimes.map((hour) => (
-          <Link to={`/assentos/${hour.id}`}>
-            <button key={hour.id} data-test="showtime">
+          <Link key={hour.id} to={`/assentos/${hour.id}` }>
+            <button data-test="showtime">
               {hour.name}
             </button>
           </Link>
