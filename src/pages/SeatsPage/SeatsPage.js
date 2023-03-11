@@ -45,7 +45,9 @@ export default function SeatsPage() {
 
     if (selected.includes(seat.id)) {
       const newList = selected.filter((oldSeat) => oldSeat !== seat.id);
+      const newListName = seatName.filter((oldSeat) => oldSeat !== seat.name);
       setSelected(newList);
+      setSeatName(newListName);
     }
 }
 
@@ -61,7 +63,8 @@ export default function SeatsPage() {
     setBuyerInfo(newBuyerInfo);
   }
 
-console.log(buyerInfo);
+console.log(selected);
+console.log('nome assento', seatName)
 
   function cliquei(e) {
     e.preventDefault();
