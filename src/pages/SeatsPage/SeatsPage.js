@@ -1,17 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
 import CaptionCircles from "../../components/CaptionCircle";
 import Footer from "../../components/Footer";
-import {
-  selectedSeatBG,
-  selectedSeatBorder,
-  availableSeatBG,
-  availableSeatBorder,
-  unavailableSeatBG,
-  unavailableSeatBorder,
-} from "../../constants/color";
+import {PageContainer, SeatsContainer, FormContainer, CaptionContainer, SeatItem} from './styled'
 import captionCirclesList from "../../constants/captionCirclesList";
 import Seats from "./componentsSeatsPage/Seats";
 
@@ -21,7 +13,6 @@ export default function SeatsPage() {
   const [selected, setSelected] = useState([]);
   const [buyerInfo, setBuyerInfo] = useState({ compradores: [] });
   const [error, setError] = useState('');
-  const [isFormValid, setIsFormValid] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,14 +93,12 @@ export default function SeatsPage() {
       return newBuyerInfo;
     });
   }
-  console.log("cpf", buyerInfo.compradores.nome);
-  console.log("buyerINfo", buyerInfo);
-  console.log("selected", selected);
 
   function checkOut(e) {
     e.preventDefault();
     const cpfList = buyerInfo.compradores.map((comprador) => comprador.cpf);
-    const hasEmptyCpf = cpfList.some((cpf) => cpf.length !== 11);
+    const CpfChar = 11;
+    const hasEmptyCpf = cpfList.some((cpf) => cpf.length !== CpfChar);
     if (hasEmptyCpf) {
       setError("O campo CPF deve ter exatamente 11 caracteres.");
       return;
@@ -189,71 +178,3 @@ export default function SeatsPage() {
     </PageContainer>
   );
 }
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "Roboto";
-  font-size: 24px;
-  text-align: center;
-  color: #293845;
-  margin-top: 30px;
-  padding-bottom: 120px;
-  padding-top: 70px;
-`;
-const SeatsContainer = styled.div`
-  width: 330px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-`;
-const FormContainer = styled.form`
-  width: calc(100vw - 40px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin: 20px 0;
-  font-size: 18px;
-  button {
-    align-self: center;
-  }
-  input {
-    width: calc(100vw - 60px);
-  }
-`;
-const CaptionContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 300px;
-  justify-content: space-between;
-  margin: 20px;
-`;
-
-const SeatItem = styled.div`
-  border: 1px solid
-    ${({ isAvailable, isItSelected }) =>
-      isItSelected
-        ? selectedSeatBorder
-        : isAvailable
-        ? availableSeatBorder
-        : unavailableSeatBorder}; // Essa cor deve mudar
-  background-color: ${({ isAvailable, isItSelected }) =>
-    isItSelected
-      ? selectedSeatBG
-      : isAvailable
-      ? availableSeatBG
-      : unavailableSeatBG}; // Essa cor deve mudar
-  height: 25px;
-  width: 25px;
-  border-radius: 25px;
-  font-family: "Roboto";
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px 3px;
-`;
