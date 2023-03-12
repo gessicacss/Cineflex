@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
 export default function PurchaseInfo({ ticketInfo }) {
+  function formatCPF(cpf) {
+    const cpfArray = cpf.split("");
+    cpfArray.splice(9, 0, "-");
+    cpfArray.splice(6, 0, ".");
+    cpfArray.splice(3, 0, ".");
+    return cpfArray.join("");
+  }
+
   return (
     <>
       <TextContainer data-test="movie-info">
@@ -29,7 +37,7 @@ export default function PurchaseInfo({ ticketInfo }) {
         {ticketInfo.buyerInfo.compradores.map((buyer) => (
           <div key={buyer.cpf}>
             <p>Nome: {buyer.nome}</p>
-            <p>CPF: {buyer.cpf}</p>
+            <p>CPF: {formatCPF(buyer.cpf)}</p>
           </div>
         ))}
       </TextContainer>

@@ -1,4 +1,4 @@
-export default function Seats({ selected, buyerInfo, handleSubmit, name }) {
+export default function Seats({ selected, buyerInfo, handleSubmit, name, error }) {
   return (
     <div>
       <label>
@@ -29,6 +29,7 @@ export default function Seats({ selected, buyerInfo, handleSubmit, name }) {
           disabled={selected.length <= 0 ? true : false}
           placeholder="Digite seu CPF..."
         />
+        {error && <p>{error}</p>}
       </label>
     </div>
   );

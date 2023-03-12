@@ -19,7 +19,9 @@ export default function SeatsPage() {
   const { idSession } = useParams();
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
-  const [buyerInfo, setBuyerInfo] = useState({ ids: [], compradores: [] });
+  const [buyerInfo, setBuyerInfo] = useState({ compradores: [] });
+  const [error, setError] = useState('');
+  const [isFormValid, setIsFormValid] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,14 +34,32 @@ export default function SeatsPage() {
     promise.catch((err) => alert(err.response.data.message));
   }, [idSession]);
 
-  function removeSeat(seat) {}
+  function removeSeat(seat) {
+    const newSelectedList = selected.filter(
+      (oldSeat) => oldSeat.idAssento !== seat.id
+    );
+    setSelected(newSelectedList);
+    setBuyerInfo((prevBuyerInfo) => {
+      return {
+        ...prevBuyerInfo,
+        compradores: prevBuyerInfo.compradores.filter(
+          (buyer) => buyer.idAssento !== seat.id
+        ),
+      };
+    });
+  }
 
   function selectSeat(seat) {
     if (seat.isAvailable === false) {
       alert("Esse assento não está disponível");
       return;
     }
-    if (selected.some((seatChosen) => seatChosen.idAssento === seat.id)) {
+
+    const isItSelected = selected.some(
+      (seatChosen) => seatChosen.idAssento === seat.id
+    );
+
+    if (isItSelected) {
       const isItFilled = buyerInfo.compradores.find(
         (oldSeat) => oldSeat.idAssento === seat.id
       );
@@ -48,42 +68,17 @@ export default function SeatsPage() {
         const confirmed = window.confirm(
           "Realmente quer desmarcar esse assento?"
         );
-        if (confirmed) {
-          const newSelectedList = selected.filter(
-            (oldSeat) => oldSeat.idAssento !== seat.id
-          );
-          setSelected(newSelectedList);
-          setBuyerInfo((prevBuyerInfo) => {
-            return {
-              ...prevBuyerInfo,
-              ids: newSelectedList.map((seat) => seat.idAssento),
-              compradores: prevBuyerInfo.compradores.filter(
-                (buyer) => buyer.idAssento !== seat.id
-              ),
-            };
-          });
+        if (!confirmed) {
+          return;
         }
-      } else {
-        const newSelectedList = selected.filter(
-          (oldSeat) => oldSeat.idAssento !== seat.id
-        );
-        setSelected(newSelectedList);
-        setBuyerInfo((prevBuyerInfo) => {
-          return {
-            ...prevBuyerInfo,
-            ids: newSelectedList.map((seat) => seat.idAssento),
-            compradores: prevBuyerInfo.compradores.filter(
-              (buyer) => buyer.idAssento !== seat.id
-            ),
-          };
-        });
+        removeSeat(seat);
       }
+      removeSeat(seat);
     } else {
       setSelected([...selected, { idAssento: seat.id, name: seat.name }]);
       setBuyerInfo((prevBuyerInfo) => {
         return {
           ...prevBuyerInfo,
-          ids: [...prevBuyerInfo.ids, seat.id],
           compradores: [
             ...prevBuyerInfo.compradores,
             { idAssento: seat.id, nome: "", cpf: "" },
@@ -107,30 +102,35 @@ export default function SeatsPage() {
       return newBuyerInfo;
     });
   }
-
   console.log("cpf", buyerInfo.compradores.nome);
   console.log("buyerINfo", buyerInfo);
   console.log("selected", selected);
 
   function checkOut(e) {
     e.preventDefault();
-    const ids = selected.map((seat) => seat.idAssento);
-    const compradores = ids.map((id) => {
-      const comprador = buyerInfo.compradores.find(
-        (comprador) => comprador.idAssento === id
+    const cpfList = buyerInfo.compradores.map((comprador) => comprador.cpf);
+    const hasEmptyCpf = cpfList.some((cpf) => cpf.length !== 11);
+    if (hasEmptyCpf) {
+      setError("O campo CPF deve ter exatamente 11 caracteres.");
+      return;
+    }
+      const ids = selected.map((seat) => seat.idAssento);
+      const compradores = ids.map((id) => {
+        const comprador = buyerInfo.compradores.find(
+          (comprador) => comprador.idAssento === id
+        );
+        return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
+      });
+  
+      const tickets = { ids, compradores };
+      console.log("ticket enviado pra api", tickets);
+      const ticketInfo = { movie: seatsLists, buyerInfo, selected };
+      const promise = axios.post(
+        "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+        tickets
       );
-      return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
-    });
-
-    const tickets = { ids, compradores };
-    console.log("ticket enviado pra api", tickets);
-    const ticketInfo = { movie: seatsLists, buyerInfo, selected };
-    const promise = axios.post(
-      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
-      tickets
-    );
-    promise.then(() => navigate("/sucesso", { state: { ticketInfo } }));
-    promise.catch((err) => alert(err.response.data.message));
+      promise.then(() => navigate("/sucesso", { state: { ticketInfo } }));
+      promise.catch((err) => alert(err.response.data.message));
   }
 
   if (seatsLists === undefined) {
@@ -163,13 +163,14 @@ export default function SeatsPage() {
         ))}
       </CaptionContainer>
       <FormContainer onSubmit={checkOut}>
-        {selected.map(({ name: nome, idAssento: idAssento }) => (
+        {selected.map(({ name: nome, idAssento }) => (
           <Seats
             key={idAssento}
             buyerInfo={buyerInfo}
             selected={selected}
             name={nome}
             handleSubmit={(event) => handleSubmit(event, idAssento)}
+            error={error}
           />
         ))}
         <button
