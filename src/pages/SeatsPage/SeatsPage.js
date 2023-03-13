@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CaptionCircles from "../../components/CaptionCircle";
+import CaptionCircles from "./componentsSeatsPage/CaptionCircle";
 import Footer from "../../components/Footer";
 import {
   PageContainer,
@@ -18,7 +18,6 @@ export default function SeatsPage() {
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
   const [buyerInfo, setBuyerInfo] = useState({ compradores: [] });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -155,10 +154,8 @@ export default function SeatsPage() {
           <SeatsForm
             key={idAssento}
             buyerInfo={buyerInfo}
-            selected={selected}
             name={nome}
             handleSubmit={(event) => handleSubmit(event, idAssento)}
-            error={error}
           />
         ))}
         <button

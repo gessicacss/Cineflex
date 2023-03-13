@@ -1,20 +1,16 @@
 import styled from "styled-components";
 
 export default function SeatsForm({
-  selected,
   buyerInfo,
   handleSubmit,
   name,
-  error,
 }) {
   return (
     <div>
-      <Container>
-      <label>
+      <label data-test="client-name">
         Nome do Comprador {name}:
         <input
           id="name"
-          data-test="client-name"
           name={"nome"}
           required
           type="text"
@@ -23,13 +19,10 @@ export default function SeatsForm({
           placeholder="Digite seu nome..."
         />
       </label>
-      </Container>
-      <Container>
-        <label>
+        <label data-test="client-cpf">
           CPF do Comprador {name}:
           <input
             id="cpf"
-            data-test="client-cpf"
             name={"cpf"}
             required
             pattern="[0-9]+$"
@@ -39,20 +32,7 @@ export default function SeatsForm({
             onChange={handleSubmit}
             placeholder="Digite seu CPF..."
           />
-          {error && <p>{error}</p>}
         </label>
-      </Container>
     </div>
   );
 }
-
-const Container = styled.div`
-  position: relative;
-  p {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    font-size: 14px;
-    color: red;
-  }
-`;

@@ -6,7 +6,7 @@ import {
   availableSeatBorder,
   unavailableSeatBG,
   unavailableSeatBorder,
-} from "../constants/color";
+} from "../../../constants/color";
 
 export default function CaptionCircles({ name }) {
   return (
