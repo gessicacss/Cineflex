@@ -7,7 +7,7 @@ export default function Button() {
   const location = useLocation();
   const navigate = useNavigate();
   return (
-    location.pathname !== "/" && (
+    location.pathname !== "/" && location.pathname !== "/sucesso" ? (
       <ContainerButton
         onClick={() => navigate(-1)}
         data-test="go-home-header-btn"
@@ -16,7 +16,7 @@ export default function Button() {
           <HiArrowLeft />
         </IconContext.Provider>
       </ContainerButton>
-    )
+    ) : ""
   );
 }
 
@@ -25,7 +25,4 @@ const ContainerButton = styled.div`
   position: fixed;
   left: 10px;
   z-index: 1;
-  ion-icon {
-    color: #000;
-  }
 `;

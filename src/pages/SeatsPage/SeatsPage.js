@@ -3,16 +3,22 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CaptionCircles from "../../components/CaptionCircle";
 import Footer from "../../components/Footer";
-import {PageContainer, SeatsContainer, FormContainer, CaptionContainer, SeatItem} from './styled'
+import {
+  PageContainer,
+  SeatsContainer,
+  FormContainer,
+  CaptionContainer,
+  SeatItem,
+} from "./styled";
 import captionCirclesList from "../../constants/captionCirclesList";
-import Seats from "./componentsSeatsPage/Seats";
+import SeatsForm from "./componentsSeatsPage/SeatsForm";
 
 export default function SeatsPage() {
   const { idSession } = useParams();
   const [seatsLists, setseatsLists] = useState(undefined);
   const [selected, setSelected] = useState([]);
   const [buyerInfo, setBuyerInfo] = useState({ compradores: [] });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,30 +102,23 @@ export default function SeatsPage() {
 
   function checkOut(e) {
     e.preventDefault();
-    const cpfList = buyerInfo.compradores.map((comprador) => comprador.cpf);
-    const CpfChar = 11;
-    const hasEmptyCpf = cpfList.some((cpf) => cpf.length !== CpfChar);
-    if (hasEmptyCpf) {
-      setError("O campo CPF deve ter exatamente 11 caracteres.");
-      return;
-    }
-      const ids = selected.map((seat) => seat.idAssento);
-      const compradores = ids.map((id) => {
-        const comprador = buyerInfo.compradores.find(
-          (comprador) => comprador.idAssento === id
-        );
-        return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
-      });
-  
-      const tickets = { ids, compradores };
-      console.log("ticket enviado pra api", tickets);
-      const ticketInfo = { movie: seatsLists, buyerInfo, selected };
-      const promise = axios.post(
-        "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
-        tickets
+    const ids = selected.map((seat) => seat.idAssento);
+    const compradores = ids.map((id) => {
+      const comprador = buyerInfo.compradores.find(
+        (comprador) => comprador.idAssento === id
       );
-      promise.then(() => navigate("/sucesso", { state: { ticketInfo } }));
-      promise.catch((err) => alert(err.response.data.message));
+      return { idAssento: id, nome: comprador.nome, cpf: comprador.cpf };
+    });
+
+    const tickets = { ids, compradores };
+    console.log("ticket enviado pra api", tickets);
+    const ticketInfo = { movie: seatsLists, buyerInfo, selected };
+    const promise = axios.post(
+      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+      tickets
+    );
+    promise.then(() => navigate("/sucesso", { state: { ticketInfo } }));
+    promise.catch((err) => alert(err.response.data.message));
   }
 
   if (seatsLists === undefined) {
@@ -153,7 +152,7 @@ export default function SeatsPage() {
       </CaptionContainer>
       <FormContainer onSubmit={checkOut}>
         {selected.map(({ name: nome, idAssento }) => (
-          <Seats
+          <SeatsForm
             key={idAssento}
             buyerInfo={buyerInfo}
             selected={selected}

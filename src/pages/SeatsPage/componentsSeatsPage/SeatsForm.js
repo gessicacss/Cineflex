@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function Seats({
+export default function SeatsForm({
   selected,
   buyerInfo,
   handleSubmit,
@@ -33,7 +33,9 @@ export default function Seats({
             data-test="client-cpf"
             name={"cpf"}
             required
-            type="number"
+            pattern="[0-9]+$"
+            maxLength={11}
+            minLength={11}
             value={buyerInfo.cpf}
             onChange={handleSubmit}
             disabled={selected.length <= 0 ? true : false}
