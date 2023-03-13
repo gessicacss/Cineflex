@@ -19,7 +19,6 @@ export default function SeatsForm({
           required
           type="text"
           value={buyerInfo.name}
-          disabled={selected.length <= 0 ? true : false}
           onChange={handleSubmit}
           placeholder="Digite seu nome..."
         />
@@ -38,7 +37,6 @@ export default function SeatsForm({
             minLength={11}
             value={buyerInfo.cpf}
             onChange={handleSubmit}
-            disabled={selected.length <= 0 ? true : false}
             placeholder="Digite seu CPF..."
           />
           {error && <p>{error}</p>}
